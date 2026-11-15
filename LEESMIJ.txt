@@ -1,0 +1,18 @@
+GERRIE & SABRINA YAHTZEE — iPhone-prototype
+
+Deze map bevat een mobiele webapp:
+- index.html: app
+- manifest.webmanifest: PWA-instellingen
+- sw.js: offline cache
+- icon-192.png en icon-512.png: app-iconen
+
+iPhone-installatie:
+1. Zet de bestanden op een statische HTTPS-hosting (bijv. GitHub Pages of je eigen webhosting).
+2. Open de HTTPS-link in Safari op je iPhone.
+3. Kies Deel > Zet op beginscherm.
+4. Open de app minstens één keer met internet; daarna worden de appbestanden offline beschikbaar.
+
+Geen database, account, tracking of externe diensten. Scores worden lokaal in de browser opgeslagen. Verwijder Safari-websitegegevens niet als je scores wilt behouden. De opslag is apparaat- en browsergebonden; er is geen synchronisatie met pc.
+
+Gebruik Instellingen/websitebeheer zorgvuldig en maak regelmatig een back-up. Deze eerste prototypeversie bevat nieuwe partij met dezelfde of nieuwe spelers, 13 scorecategorieën, upper bonus, score wijzigen, categorie wissen, undo, extra Yahtzee +100 en partijhistorie.
+LET OP: jokerregels voor extra Yahtzee zijn nog niet volledig geautomatiseerd. De app laat de bonus registreren, maar automatiseert de verplichte categorievolgorde nog niet. Controleer de scorekeuze volgens de dobbelstenen en klassieke regels.
