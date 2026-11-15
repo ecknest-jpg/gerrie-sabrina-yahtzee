@@ -1,18 +1,27 @@
-GERRIE & SABRINA YAHTZEE — iPhone-prototype
+GERRIE & SABRINA YAHTZEE — versie 2
 
-Deze map bevat een mobiele webapp:
-- index.html: app
-- manifest.webmanifest: PWA-instellingen
-- sw.js: offline cache
+BESTANDEN
+- index.html: de app
+- manifest.webmanifest: instellingen voor installatie op iPhone
+- sw.js: offline cache (versie 2)
 - icon-192.png en icon-512.png: app-iconen
 
-iPhone-installatie:
-1. Zet de bestanden op een statische HTTPS-hosting (bijv. GitHub Pages of je eigen webhosting).
-2. Open de HTTPS-link in Safari op je iPhone.
-3. Kies Deel > Zet op beginscherm.
-4. Open de app minstens één keer met internet; daarna worden de appbestanden offline beschikbaar.
+VERNIEUWINGEN
+- Klassement op basis van afgeronde partijen: Gespeeld, Gewonnen, Verloren, Gelijk, Totaal punten, Gemiddelde en Hoogste score.
+- Historie met één regel per speler: Partij-ID, Datum/tijd, Speler, Eindtotaal, Uitkomst, Bovenbonus en Yahtzee-bonus.
+- Automatisch opslaan zodra alle spelers alle 13 categorieën hebben ingevuld.
+- Gelijkspel wordt geregistreerd voor de spelers die de hoogste score delen.
+- Extra Yahtzee: na bevestiging kies je het gegooide getal; de Jokerregel wordt toegepast en daarna gaat de beurt door.
+- JSON-reservekopie terugzetten/maken en CSV-export voor Excel.
+- Bestaande lokale gegevens van versie 1 worden bij het openen gemigreerd. Oudere historie blijft behouden; ontbrekende oude bonusgegevens worden als — getoond.
 
-Geen database, account, tracking of externe diensten. Scores worden lokaal in de browser opgeslagen. Verwijder Safari-websitegegevens niet als je scores wilt behouden. De opslag is apparaat- en browsergebonden; er is geen synchronisatie met pc.
+UPDATEN OP GITHUB PAGES
+1. Open de GitHub-repository gerrie-sabrina-yahtzee.
+2. Kies Add file > Upload files.
+3. Upload de vijf bestanden uit deze map (index.html, manifest.webmanifest, sw.js, icon-192.png, icon-512.png) en kies Commit changes.
+4. Open GitHub Pages en wacht tot de nieuwe versie is gepubliceerd.
+5. Op iPhone: sluit de Yahtzee-app helemaal af, open hem opnieuw met internet en wacht even op de update. Als de oude versie zichtbaar blijft, sluit hem nogmaals en open opnieuw.
 
-Gebruik Instellingen/websitebeheer zorgvuldig en maak regelmatig een back-up. Deze eerste prototypeversie bevat nieuwe partij met dezelfde of nieuwe spelers, 13 scorecategorieën, upper bonus, score wijzigen, categorie wissen, undo, extra Yahtzee +100 en partijhistorie.
-LET OP: jokerregels voor extra Yahtzee zijn nog niet volledig geautomatiseerd. De app laat de bonus registreren, maar automatiseert de verplichte categorievolgorde nog niet. Controleer de scorekeuze volgens de dobbelstenen en klassieke regels.
+LET OP OPSLAG
+De app gebruikt dezelfde lokale opslag-sleutel als de eerste versie. Bij normaal updaten blijven de bestaande lokale scores en historie behouden. Wis niet de websitegegevens van Safari en verwijder de app niet voordat je een JSON-reservekopie hebt gemaakt.
+De CSV-export maakt twee Excel-geschikte bestanden: historie en klassement.

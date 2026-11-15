@@ -1,7 +1,8 @@
 {
   "name": "Gerrie & Sabrina Yahtzee",
   "short_name": "G&S Yahtzee",
-  "start_url": "./index.html",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#f2f5f7",
   "theme_color": "#087f78",

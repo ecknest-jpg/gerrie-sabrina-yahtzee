@@ -1,41 +1,299 @@
-<!doctype html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#087f78"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="G&S Yahtzee"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-192.png"><title>Gerrie & Sabrina Yahtzee</title>
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#087f78">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="G&S Yahtzee">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Gerrie & Sabrina Yahtzee</title>
 <style>
-:root{--t:#087f78;--n:#173b60;--bg:#f2f5f7;--line:#dce3e8;--gold:#fff0b8}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#17212b;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial;padding-bottom:85px}header{background:var(--t);color:white;padding:calc(15px + env(safe-area-inset-top)) 17px 15px;position:sticky;top:0;z-index:3}.brand{font-weight:850;font-size:19px}.sub{font-size:12px;opacity:.85;margin-top:3px}main{max-width:680px;margin:auto;padding:13px}.players{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-bottom:12px}.player,.panel{background:white;border-radius:15px;padding:13px;box-shadow:0 5px 20px #173b6014}.player.active{outline:2px solid var(--t);background:#e8f7f5}.pname{font-weight:750;font-size:14px}.total{font-size:28px;font-weight:850;color:var(--n)}.hint,.note{font-size:12px;color:#64748b}.status{background:var(--n);color:white;border-radius:13px;padding:12px;margin:12px 0;display:flex;justify-content:space-between;gap:8px}.heading{font-size:12px;font-weight:850;color:#64748b;letter-spacing:.7px;margin:17px 3px 8px;text-transform:uppercase}.sheet{background:white;border-radius:15px;overflow:hidden;box-shadow:0 5px 20px #173b6014}.cat{width:100%;display:flex;justify-content:space-between;align-items:center;text-align:left;background:white;padding:14px;border:0;border-bottom:1px solid var(--line);min-height:55px}.cat:nth-child(even){background:#f7f9fa}.cat.last{background:var(--gold)!important;box-shadow:inset 5px 0 var(--t)}.cat:disabled{opacity:1}.cat strong{font-size:16px}.score{font-size:19px;font-weight:850;color:var(--n)}.empty{color:#a0aab4}.tot{display:flex;justify-content:space-between;padding:12px 14px;background:#edf2f5;border-bottom:1px solid var(--line);font-weight:750}.final{background:var(--n);color:white;font-size:18px}.tools{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:13px 0}.tool,.primary,.secondary,.danger{border:0;border-radius:12px;padding:13px 7px;font-weight:800}.tool{background:white;color:var(--n);box-shadow:0 4px 16px #173b6014;font-size:12px}.tool b{display:block;font-size:19px}.primary{background:var(--t);color:white}.secondary{background:#e9eef2;color:var(--n)}.danger{background:#fff0f0;color:#a52c2c}.bottom{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid var(--line);padding:8px 8px calc(8px + env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(4,1fr);z-index:4}.nav{background:white;color:#64748b;font-size:11px;font-weight:750;padding:5px}.nav b{display:block;font-size:19px}.nav.on{color:var(--t)}.overlay{position:fixed;inset:0;background:#071827bb;display:none;align-items:flex-end;justify-content:center;padding:10px;z-index:10}.overlay.show{display:flex}.dialog{width:min(100%,500px);max-height:88dvh;overflow:auto;background:white;border-radius:22px;padding:20px}.dialog h2{margin:0 0 7px;color:var(--n);font-size:22px}.dialog p{font-size:14px;color:#64748b;line-height:1.4}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.choice{border:2px solid var(--line);background:#f8fafb;border-radius:12px;min-height:60px;font-size:22px;font-weight:850;color:var(--n)}.choice:active{background:#e3f5f2;border-color:var(--t)}.actions{display:flex;gap:8px;margin-top:14px}.actions button{flex:1}.field{margin:10px 0}.field label{display:block;font-weight:750;font-size:13px;margin-bottom:5px}.field input,.field select{width:100%;border:1px solid var(--line);border-radius:10px;padding:12px;font:inherit;font-size:16px}.row{display:flex;justify-content:space-between;gap:8px;padding:12px 0;border-bottom:1px solid var(--line)}.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--n);color:white;padding:12px 18px;border-radius:12px;opacity:0;z-index:20;font-weight:800;pointer-events:none}.toast.show{opacity:1}@media(min-width:600px){.overlay{align-items:center}}
-</style></head><body><header><div class="brand">🎲 Gerrie & Sabrina Yahtzee</div><div class="sub">Klassieke Yahtzee · lokaal opgeslagen</div></header><main id="app"></main><nav class="bottom"><button class="nav on" data-tab="spel"><b>🎲</b>Spel</button><button class="nav" data-tab="klassement"><b>🏆</b>Klassement</button><button class="nav" data-tab="historie"><b>📚</b>Historie</button><button class="nav" data-tab="acties"><b>☰</b>Acties</button></nav><div class="overlay" id="ov"><div class="dialog" id="dlg"></div></div><div class="toast" id="toast"></div>
+:root{--teal:#087f78;--navy:#173b60;--bg:#f2f5f7;--line:#dce3e8;--gold:#fff0b8;--muted:#64748b}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:#17212b;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial;padding-bottom:calc(78px + env(safe-area-inset-bottom))}
+header{background:var(--teal);color:white;padding:calc(13px + env(safe-area-inset-top)) 16px 13px;position:sticky;top:0;z-index:3}
+.brand{font-weight:850;font-size:19px}.sub{font-size:12px;opacity:.9;margin-top:3px}
+main{max-width:720px;margin:auto;padding:12px}
+h2{font-size:21px;color:var(--navy);margin:8px 0 12px}
+.panel,.player,.sheet{background:white;border-radius:15px;box-shadow:0 5px 20px #173b6014}
+.panel{padding:15px;margin-bottom:12px}
+.players{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-bottom:12px}
+.player{padding:12px}.player.active{outline:2px solid var(--teal);background:#e8f7f5}
+.pname{font-weight:800;font-size:14px}.total{font-size:27px;font-weight:900;color:var(--navy)}
+.hint,.note{font-size:12px;color:var(--muted)}
+.status{background:var(--navy);color:white;border-radius:13px;padding:12px;margin:12px 0;display:flex;justify-content:space-between;gap:8px}
+.heading{font-size:12px;font-weight:850;color:var(--muted);letter-spacing:.6px;margin:17px 3px 8px;text-transform:uppercase}
+.sheet{overflow:hidden}
+.cat{width:100%;display:flex;justify-content:space-between;align-items:center;text-align:left;background:white;padding:13px 14px;border:0;border-bottom:1px solid var(--line);min-height:53px}
+.cat:nth-child(even){background:#f7f9fa}.cat.last{background:var(--gold)!important;box-shadow:inset 5px 0 var(--teal)}
+.cat:disabled{opacity:1}.cat strong{font-size:16px}.score{font-size:19px;font-weight:850;color:var(--navy)}.empty{color:#9aa6b2}
+.tot{display:flex;justify-content:space-between;padding:11px 14px;background:#edf2f5;border-bottom:1px solid var(--line);font-weight:750}
+.final{background:var(--navy);color:white;font-size:18px}
+.tools{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:13px 0}
+.tool,.primary,.secondary,.danger{border:0;border-radius:12px;padding:13px 8px;font-weight:800;font-size:14px}
+.tool{background:white;color:var(--navy);box-shadow:0 4px 16px #173b6014;font-size:12px}.tool b{display:block;font-size:19px}
+.primary{background:var(--teal);color:white}.secondary{background:#e9eef2;color:var(--navy)}.danger{background:#fff0f0;color:#a52c2c}
+.bottom{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid var(--line);padding:7px 6px calc(7px + env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(4,1fr);z-index:4}
+.nav{background:white;color:var(--muted);font-size:11px;font-weight:750;padding:5px;border:0}.nav b{display:block;font-size:19px}.nav.on{color:var(--teal)}
+.overlay{position:fixed;inset:0;background:#071827bb;display:none;align-items:flex-end;justify-content:center;padding:10px;z-index:10}
+.overlay.show{display:flex}.dialog{width:min(100%,520px);max-height:88dvh;overflow:auto;background:white;border-radius:22px;padding:19px}
+.dialog h2{margin:0 0 7px;font-size:22px}.dialog p{font-size:14px;color:var(--muted);line-height:1.45}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.choice{border:2px solid var(--line);background:#f8fafb;border-radius:12px;min-height:58px;font-size:21px;font-weight:850;color:var(--navy)}
+.choice:active{background:#e3f5f2;border-color:var(--teal)}
+.actions{display:flex;gap:8px;margin-top:14px}.actions button{flex:1}
+.field{margin:10px 0}.field label{display:block;font-weight:750;font-size:13px;margin-bottom:5px}
+.field input,.field select{width:100%;border:1px solid var(--line);border-radius:10px;padding:12px;font:inherit;font-size:16px}
+.row{display:flex;justify-content:space-between;gap:8px;padding:12px 0;border-bottom:1px solid var(--line)}
+.table-wrap{overflow-x:auto;background:white;border-radius:13px;box-shadow:0 5px 20px #173b6014}
+table{border-collapse:collapse;width:100%;min-width:680px;font-size:13px}
+th,td{padding:10px 9px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--navy);color:white;position:sticky;top:0}
+tr:nth-child(even) td{background:#f7f9fa}
+.toast{position:fixed;bottom:calc(88px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);background:var(--navy);color:white;padding:12px 18px;border-radius:12px;opacity:0;z-index:20;font-weight:800;pointer-events:none;text-align:center;max-width:90%}
+.toast.show{opacity:1}
+.badge{display:inline-block;padding:4px 8px;border-radius:99px;background:#e8f7f5;color:var(--teal);font-size:11px;font-weight:800}
+@media(min-width:600px){.overlay{align-items:center}}
+</style>
+</head>
+<body>
+<header><div class="brand">🎲 Gerrie & Sabrina Yahtzee</div><div class="sub">Klassieke Yahtzee · lokaal opgeslagen</div></header>
+<main id="app"></main>
+<nav class="bottom">
+<button class="nav on" data-tab="spel"><b>🎲</b>Spel</button>
+<button class="nav" data-tab="klassement"><b>🏆</b>Klassement</button>
+<button class="nav" data-tab="historie"><b>📚</b>Historie</button>
+<button class="nav" data-tab="acties"><b>☰</b>Acties</button>
+</nav>
+<div class="overlay" id="ov"><div class="dialog" id="dlg"></div></div>
+<div class="toast" id="toast"></div>
 <script>
-const KEY='gs-yatzee-local-v1',cats=[['ones','Enen','upper',1],['twos','Tweeën','upper',2],['threes','Drieën','upper',3],['fours','Vieren','upper',4],['fives','Vijven','upper',5],['sixes','Zessen','upper',6],['three','Three of a Kind','sum'],['four','Four of a Kind','sum'],['full','Full House','fixed',25],['small','Kleine straat','fixed',30],['large','Grote straat','fixed',40],['yahtzee','Yahtzee','fixed',50],['chance','Chance','sum']];
-const mk=n=>({name:n,scores:{},yb:0});let S=read(),tab='spel',undoStack=[],last=null;
-function read(){try{return JSON.parse(localStorage.getItem(KEY))||{players:[mk('Gerrie'),mk('Sabrina')],active:0,started:false,history:[],game:0}}catch(e){return {players:[mk('Gerrie'),mk('Sabrina')],active:0,started:false,history:[],game:0}}}
-function save(){localStorage.setItem(KEY,JSON.stringify(S))}function snap(){undoStack.push(JSON.stringify(S));if(undoStack.length>40)undoStack.shift()}
-function esc(x){return String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function up(p){return cats.slice(0,6).reduce((s,c)=>s+(+p.scores[c[0]]||0),0)}function low(p){return cats.slice(6).reduce((s,c)=>s+(+p.scores[c[0]]||0),0)}function total(p){return up(p)+(up(p)>=63?35:0)+low(p)+p.yb*100}function done(p){return cats.every(c=>p.scores[c[0]]!==undefined)}
-function next(){for(let k=1;k<=S.players.length;k++){let i=(S.active+k)%S.players.length;if(!done(S.players[i]))return i}return S.active}
-function modal(x){dlg.innerHTML=x;ov.classList.add('show')}function close(){ov.classList.remove('show')}function say(x){toast.textContent=x;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),1400)}
-function render(){document.querySelectorAll('.nav').forEach(b=>b.classList.toggle('on',b.dataset.tab===tab));app.innerHTML=tab==='spel'?gameUI():tab==='klassement'?standUI():tab==='historie'?historyUI():actionsUI()}
-function gameUI(){if(!S.started)return `<div class="panel"><h2>Welkom bij Yahtzee!</h2><p>Start een nieuwe partij om te beginnen.</p><button class="primary" style="width:100%" onclick="newGame()">＋ Nieuwe partij</button></div>`;
-let p=S.players[S.active],ps=S.players.map((x,i)=>`<div class="player ${i===S.active?'active':''}"><div class="pname">${esc(x.name)}</div><div class="total">${total(x)}</div><div class="hint">${done(x)?'Klaar':i===S.active?'Aan de beurt':'Wacht op beurt'}</div></div>`).join('');
-let list=cats.map((c,i)=>`<button class="cat ${last&&last.i===S.active&&last.id===c[0]?'last':''}" ${p.scores[c[0]]===undefined?`onclick="pick('${c[0]}')"`:'disabled'}><strong>${c[1]}${i<6?`<small style="display:block;font-size:11px;color:#64748b;font-weight:500">Tel alle ${i+1}en bij elkaar op</small>`:''}</strong><span class="score ${p.scores[c[0]]===undefined?'empty':''}">${p.scores[c[0]]===undefined?'＋':p.scores[c[0]]}</span></button>`).join('');
-return `<div class="players">${ps}</div><div class="status"><strong>${done(p)?'Partij compleet':'Beurt: '+esc(p.name)}</strong><span>Ronde ${Object.keys(p.scores).length+1}/13</span></div><div class="heading">Bovenste gedeelte</div><div class="sheet">${list.split('</button>').slice(0,6).join('</button>')+'</button>'}</div><div class="heading">Onderste gedeelte</div><div class="sheet">${list.split('</button>').slice(6).join('</button>')}</div><div class="heading">Totaal ${esc(p.name)}</div><div class="sheet"><div class="tot"><span>Totaal boven</span><span>${up(p)}</span></div><div class="tot"><span>Bonus vanaf 63</span><span>${up(p)>=63?35:0}</span></div><div class="tot"><span>Extra Yahtzee (${p.yb} × 100)</span><span>${p.yb*100}</span></div><div class="tot"><span>Totaal onder</span><span>${low(p)}</span></div><div class="tot final"><span>Eindtotaal</span><span>${total(p)}</span></div></div><div class="tools"><button class="tool" onclick="undo()"><b>↶</b>Herstel</button><button class="tool" onclick="editScores()"><b>✎</b>Wijzig score</button><button class="tool" onclick="extra()"><b>🎲</b>Extra Yahtzee</button></div>`}
-function standUI(){return `<h2>🏆 Klassement huidige partij</h2>${S.players.map((p,i)=>`<div class="row"><b>${i+1}. ${esc(p.name)}</b><strong>${total(p)} punten</strong></div>`).join('')}`}
-function historyUI(){return `<h2>📚 Historie</h2>${S.history.length?S.history.slice().reverse().map(h=>`<div class="row"><div><b>Partij ${h.game}</b><div class="hint">${new Date(h.date).toLocaleString('nl-NL')}</div></div><b>${esc(h.winner)}</b></div>`).join(''):'<p>Nog geen opgeslagen partijen.</p>'}`}
-function actionsUI(){return `<h2>Spelbeheer</h2><button class="primary" style="width:100%;margin:6px 0" onclick="newGame()">＋ Nieuwe partij</button><button class="secondary" style="width:100%;margin:6px 0" onclick="saveGame()">Partij opslaan in historie</button><button class="secondary" style="width:100%;margin:6px 0" onclick="rename()">Spelers aanpassen</button><button class="secondary" style="width:100%;margin:6px 0" onclick="undo()">Laatste actie herstellen</button><button class="danger" style="width:100%;margin:6px 0" onclick="clearHist()">Historie wissen</button><p class="note">Gegevens worden alleen op dit apparaat bewaard. Maak regelmatig een reservekopie via Instellingen in de volgende versie.</p>`}
-function pick(id){let c=cats.find(x=>x[0]===id),opts=c[2]==='upper'?Array.from({length:6},(_,i)=>i*c[3]):c[2]==='fixed'?[0,c[3]]:[0,...Array.from({length:26},(_,i)=>i+5)];modal(`<h2>${c[1]}</h2><p>Kies de score voor ${esc(S.players[S.active].name)}.</p><div class="grid">${opts.map(v=>`<button class="choice" onclick="score('${id}',${v})">${v}</button>`).join('')}</div><div class="actions"><button class="secondary" onclick="close()">Annuleren</button></div>`)}
-function score(id,v){snap();let who=S.active;S.players[who].scores[id]=v;last={i:who,id};save();close();render();say(`${S.players[who].name}: ${v} punten`);setTimeout(()=>{if(last&&last.i===who&&last.id===id){S.active=next();last=null;save();render()}},1500)}
-function undo(){if(!undoStack.length){say('Geen actie om te herstellen');return}S=JSON.parse(undoStack.pop());last=null;save();render();say('Laatste actie hersteld')}
-function editScores(){let p=S.players[S.active],a=cats.filter(c=>p.scores[c[0]]!==undefined);if(!a.length)return say('Nog geen scores');modal(`<h2>Score wijzigen</h2>${a.map(c=>`<button class="cat" onclick="editOne('${c[0]}')"><strong>${c[1]}</strong><span class="score">${p.scores[c[0]]}</span></button>`).join('')}<div class="actions"><button class="secondary" onclick="close()">Sluiten</button></div>`)}
-function editOne(id){let c=cats.find(x=>x[0]===id),opts=c[2]==='upper'?Array.from({length:6},(_,i)=>i*c[3]):c[2]==='fixed'?[0,c[3]]:[0,...Array.from({length:26},(_,i)=>i+5)];modal(`<h2>${c[1]} wijzigen</h2><div class="grid">${opts.map(v=>`<button class="choice" onclick="setEdit('${id}',${v})">${v}</button>`).join('')}</div><button class="danger" style="width:100%;margin-top:10px" onclick="erase('${id}')">Categorie leegmaken</button>`)}
-function setEdit(id,v){snap();S.players[S.active].scores[id]=v;save();close();render();say('Score gewijzigd')}function erase(id){snap();delete S.players[S.active].scores[id];save();close();render();say('Score verwijderd')}
-function extra(){let p=S.players[S.active];if(p.scores.yahtzee!==50)return say('Eerst Yahtzee met 50 punten invullen');modal(`<h2>Extra Yahtzee</h2><p>Een extra Yahtzee levert 100 bonuspunten op. Bevestig alleen als je daadwerkelijk opnieuw Yahtzee hebt gegooid.</p><div class="actions"><button class="secondary" onclick="close()">Annuleren</button><button class="primary" onclick="extraOK()">+100 punten</button></div><p class="note">Jokerregels voor de categorie-invulling zijn in deze eerste versie nog niet volledig geautomatiseerd.</p>`)}
-function extraOK(){snap();S.players[S.active].yb++;save();close();render();say('+100 Yahtzee-bonus')}
-function newGame(){modal(`<h2>Nieuwe partij</h2><p>Met dezelfde spelers verder spelen?</p><div class="actions"><button class="primary" onclick="startSame()">Ja, dezelfde</button><button class="secondary" onclick="newNames()">Andere spelers</button></div><div class="actions"><button class="secondary" onclick="close()">Annuleren</button></div>`)}
-function startSame(){begin(S.players.map(p=>p.name))}
-function newNames(){modal(`<h2>Spelers instellen</h2><div class="field"><label>Aantal spelers</label><select id="num" onchange="namesForm()">${[2,3,4,5,6].map(n=>`<option>${n}</option>`).join('')}</select></div><div id="names"></div><div class="actions"><button class="secondary" onclick="close()">Annuleren</button><button class="primary" onclick="createNames()">Start</button></div>`);namesForm()}
-function namesForm(){let n=+document.getElementById('num').value;document.getElementById('names').innerHTML=Array.from({length:n},(_,i)=>`<div class="field"><label>Speler ${i+1}</label><input class="nm" value="${['Gerrie','Sabrina','Speler 3','Speler 4','Speler 5','Speler 6'][i]}"></div>`).join('')}
-function createNames(){begin(Array.from(document.querySelectorAll('.nm')).map(x=>x.value.trim()||'Speler'))}
-function begin(names){snap();S.players=names.map(mk);S.active=0;S.started=true;S.game++;last=null;save();close();tab='spel';render();say('Nieuwe partij gestart')}
-function saveGame(){if(!S.started)return say('Geen actieve partij');let sorted=S.players.slice().sort((a,b)=>total(b)-total(a));S.history.push({game:S.game,date:new Date().toISOString(),winner:total(sorted[0])===total(sorted[1])?'Gelijkspel':sorted[0].name,scores:S.players.map(p=>({name:p.name,score:total(p)}))});save();tab='historie';render();say('Partij opgeslagen')}
-function rename(){modal(`<h2>Spelers aanpassen</h2>${S.players.map((p,i)=>`<div class="field"><label>Speler ${i+1}</label><input id="rn${i}" value="${esc(p.name)}"></div>`).join('')}<div class="actions"><button class="secondary" onclick="close()">Annuleren</button><button class="primary" onclick="renameOK()">Opslaan</button></div>`)}
-function renameOK(){snap();S.players.forEach((p,i)=>p.name=document.getElementById('rn'+i).value.trim()||p.name);save();close();render()}
-function clearHist(){modal(`<h2>Historie wissen?</h2><p>De opgeslagen historie wordt verwijderd. De huidige partij blijft staan.</p><div class="actions"><button class="secondary" onclick="close()">Annuleren</button><button class="danger" onclick="S.history=[];save();close();render()">Wissen</button></div>`)}
-document.querySelectorAll('.nav').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;render()});ov.onclick=e=>{if(e.target===ov)close()};if('serviceWorker'in navigator&&location.protocol.startsWith('http'))addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));render();
-</script></body></html>
+'use strict';
+const KEY='gs-yatzee-local-v1';
+const cats=[
+ ['ones','Enen','upper',1],['twos','Tweeën','upper',2],['threes','Drieën','upper',3],
+ ['fours','Vieren','upper',4],['fives','Vijven','upper',5],['sixes','Zessen','upper',6],
+ ['three','Three of a Kind','sum'],['four','Four of a Kind','sum'],
+ ['full','Full House','fixed',25],['small','Kleine straat','fixed',30],
+ ['large','Grote straat','fixed',40],['yahtzee','Yahtzee','fixed',50],['chance','Chance','sum']
+];
+const upperIds=['ones','twos','threes','fours','fives','sixes'];
+const lowerIds=['three','four','full','small','large','chance'];
+const defaultState=()=>({players:[mk('Gerrie'),mk('Sabrina')],active:0,started:false,history:[],game:0,gameSaved:false});
+function mk(name){return {name,scores:{},yb:0};}
+function migrate(raw){
+ let s=raw&&typeof raw==='object'?raw:defaultState();
+ if(!Array.isArray(s.players)||!s.players.length)s.players=defaultState().players;
+ s.players=s.players.map(p=>({name:String(p.name||'Speler'),scores:p.scores&&typeof p.scores==='object'?p.scores:{},yb:Number(p.yb)||0}));
+ if(!Array.isArray(s.history))s.history=[];
+ // Convert the first prototype's one-record-per-game history into one row per player.
+ const converted=[];
+ for(const h of s.history){
+  if(h&&Array.isArray(h.scores)){
+   const scores=h.scores;
+   const max=Math.max(...scores.map(x=>Number(x.score)||0));
+   for(const x of scores){
+    const score=Number(x.score)||0;
+    converted.push({gameId:String(h.game??''),date:h.date||new Date().toISOString(),player:String(x.name||'Speler'),total:score,outcome:score===max&&scores.filter(y=>(Number(y.score)||0)===max).length>1?'Gelijk':(score===max?'Gewonnen':'Verloren'),upperBonus:null,yahtzeeBonus:null,legacy:true});
+   }
+  }else if(h&&h.player!==undefined){converted.push(h);}
+ }
+ s.history=converted;
+ s.active=Math.max(0,Math.min(Number(s.active)||0,s.players.length-1));
+ s.game=Number(s.game)||0;s.started=!!s.started;s.gameSaved=!!s.gameSaved;
+ return s;
+}
+function read(){try{return migrate(JSON.parse(localStorage.getItem(KEY)))}catch(e){return defaultState()}}
+let S=read(),tab='spel',undoStack=[],last=null,advanceTimer=null;
+const app=document.getElementById('app'),ov=document.getElementById('ov'),dlg=document.getElementById('dlg'),toast=document.getElementById('toast');
+function save(){localStorage.setItem(KEY,JSON.stringify(S));}
+function snap(){undoStack.push(JSON.stringify(S));if(undoStack.length>50)undoStack.shift();}
+function esc(x){return String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function up(p){return cats.slice(0,6).reduce((n,c)=>n+(Number(p.scores[c[0]])||0),0);}
+function low(p){return cats.slice(6).reduce((n,c)=>n+(Number(p.scores[c[0]])||0),0);}
+function upperBonus(p){return up(p)>=63?35:0;}
+function total(p){return up(p)+upperBonus(p)+low(p)+(Number(p.yb)||0)*100;}
+function done(p){return cats.every(c=>Object.prototype.hasOwnProperty.call(p.scores,c[0]));}
+function allDone(){return S.players.length>0&&S.players.every(done);}
+function next(){for(let k=1;k<=S.players.length;k++){let i=(S.active+k)%S.players.length;if(!done(S.players[i]))return i;}return S.active;}
+function modal(x){dlg.innerHTML=x;ov.classList.add('show');}
+function close(){ov.classList.remove('show');}
+function say(x){toast.textContent=x;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),1800);}
+function optionsFor(c){if(c[2]==='upper')return Array.from({length:6},(_,i)=>i*c[3]);if(c[2]==='fixed')return [0,c[3]];return Array.from({length:26},(_,i)=>i+5);}
+function render(){
+ document.querySelectorAll('.nav').forEach(b=>b.classList.toggle('on',b.dataset.tab===tab));
+ app.innerHTML=tab==='spel'?gameUI():tab==='klassement'?standUI():tab==='historie'?historyUI():actionsUI();
+}
+function gameUI(){
+ if(!S.started)return `<div class="panel"><h2>Welkom bij Yahtzee!</h2><p>Start een nieuwe partij om te beginnen.</p><button class="primary" style="width:100%" onclick="newGame()">＋ Nieuwe partij</button></div>`;
+ const p=S.players[S.active];
+ const ps=S.players.map((x,i)=>`<div class="player ${i===S.active&&!S.gameSaved?'active':''}"><div class="pname">${esc(x.name)}</div><div class="total">${total(x)}</div><div class="hint">${done(x)?'Klaar':i===S.active?'Aan de beurt':'Wacht op beurt'}</div></div>`).join('');
+ const list=cats.map((c,i)=>`<button class="cat ${last&&last.i===S.active&&last.id===c[0]?'last':''}" ${!S.gameSaved&&p.scores[c[0]]===undefined?`onclick="pick('${c[0]}')"`:'disabled'}><strong>${c[1]}${i<6?`<small style="display:block;font-size:11px;color:#64748b;font-weight:500">Tel alle ${i+1}en bij elkaar op</small>`:''}</strong><span class="score ${p.scores[c[0]]===undefined?'empty':''}">${p.scores[c[0]]===undefined?'＋':p.scores[c[0]]}</span></button>`).join('');
+ const status=S.gameSaved?`<strong>Partij opgeslagen</strong><span><span class="badge">Automatisch</span></span>`:`<strong>${done(p)?'Speler klaar':'Beurt: '+esc(p.name)}</strong><span>Ingevuld ${Object.keys(p.scores).length}/13</span>`;
+ return `<div class="players">${ps}</div><div class="status">${status}</div>
+ <div class="heading">Bovenste gedeelte</div><div class="sheet">${list.split('</button>').slice(0,6).join('</button>')+'</button>'}
+ <div class="tot"><span>Totaal boven</span><span>${up(p)}</span></div><div class="tot"><span>Bonus vanaf 63</span><span>${upperBonus(p)}</span></div></div>
+ <div class="heading">Onderste gedeelte</div><div class="sheet">${list.split('</button>').slice(6).join('</button>')}
+ <div class="tot"><span>Extra Yahtzee (${p.yb} × 100)</span><span>${p.yb*100}</span></div><div class="tot"><span>Totaal onder</span><span>${low(p)}</span></div><div class="tot final"><span>Eindtotaal</span><span>${total(p)}</span></div></div>
+ ${S.gameSaved?`<div class="panel" style="margin-top:13px"><h2>🏆 Partij afgerond</h2>${winnerText(S.players)}<button class="primary" style="width:100%;margin-top:10px" onclick="newGame()">＋ Nieuwe partij</button></div>`:
+ `<div class="tools"><button class="tool" onclick="undo()"><b>↶</b>Herstel</button><button class="tool" onclick="editScores()"><b>✎</b>Wijzig score</button><button class="tool" onclick="extra()"> <b>🎲</b>Extra Yahtzee</button></div>`}`;
+}
+function winnerText(players){const max=Math.max(...players.map(total));const winners=players.filter(p=>total(p)===max);return `<p>${winners.length>1?'Gelijkspel tussen':'Winnaar:'} <b>${winners.map(p=>esc(p.name)).join(' & ')}</b> met ${max} punten.</p>${players.map(p=>`<div class="row"><span>${esc(p.name)}</span><b>${total(p)} punten</b></div>`).join('')}`;}
+function rankRows(){
+ const map=new Map();
+ for(const h of S.history){
+  const name=String(h.player||'');if(!name)continue;
+  if(!map.has(name))map.set(name,{player:name,played:0,won:0,lost:0,tie:0,points:0,highest:0});
+  const a=map.get(name);a.played++;a.points+=Number(h.total)||0;a.highest=Math.max(a.highest,Number(h.total)||0);
+  if(h.outcome==='Gewonnen')a.won++;else if(h.outcome==='Verloren')a.lost++;else if(h.outcome==='Gelijk')a.tie++;
+ }
+ return [...map.values()].map(a=>({...a,average:a.played?a.points/a.played:0})).sort((a,b)=>b.won-a.won||b.average-a.average||b.highest-a.highest||a.player.localeCompare(b.player,'nl'));
+}
+function standUI(){
+ const rows=rankRows();
+ return `<h2>🏆 Klassement</h2><p class="note">Ranglijst op basis van alle automatisch opgeslagen partijen. Bij gelijke winst telt het gemiddelde als volgende rangschikking.</p>${rows.length?`<div class="table-wrap"><table><thead><tr><th>Speler</th><th>Gespeeld</th><th>Gewonnen</th><th>Verloren</th><th>Gelijk</th><th>Totaal punten</th><th>Gemiddelde</th><th>Hoogste score</th></tr></thead><tbody>${rows.map((r,i)=>`<tr><td><b>${i+1}. ${esc(r.player)}</b></td><td>${r.played}</td><td>${r.won}</td><td>${r.lost}</td><td>${r.tie}</td><td>${r.points}</td><td>${r.average.toFixed(1).replace('.',',')}</td><td>${r.highest}</td></tr>`).join('')}</tbody></table></div>`:'<div class="panel">Er zijn nog geen afgeronde partijen. Het klassement wordt automatisch opgebouwd na de eerste partij.</div>'}`;
+}
+function historyUI(){
+ const rows=S.history.slice().reverse();
+ return `<h2>📚 Historie</h2><p class="note">Iedere speler krijgt een eigen regel per partij. Oudere partijen uit de eerste appversie blijven behouden; bonusgegevens die toen niet werden opgeslagen staan als —.</p>${rows.length?`<div class="table-wrap"><table><thead><tr><th>Partij-ID</th><th>Datum/tijd</th><th>Speler</th><th>Eindtotaal</th><th>Uitkomst</th><th>Bovenbonus</th><th>Yahtzee-bonus</th></tr></thead><tbody>${rows.map(h=>`<tr><td>${esc(h.gameId)}</td><td>${new Date(h.date).toLocaleString('nl-NL')}</td><td><b>${esc(h.player)}</b></td><td>${Number(h.total)||0}</td><td>${esc(h.outcome||'—')}</td><td>${h.upperBonus===null||h.upperBonus===undefined?'—':h.upperBonus}</td><td>${h.yahtzeeBonus===null||h.yahtzeeBonus===undefined?'—':h.yahtzeeBonus}</td></tr>`).join('')}</tbody></table></div>`:'<div class="panel">Nog geen opgeslagen partijen.</div>'}`;
+}
+function actionsUI(){
+ return `<h2>Spelbeheer</h2>
+ <button class="primary" style="width:100%;margin:6px 0" onclick="newGame()">＋ Nieuwe partij</button>
+ <div class="panel"><b>Reservekopie & Excel</b><p class="note">Bewaar je volledige spelgegevens als reservekopie. De CSV-bestanden kun je openen in Excel.</p>
+ <button class="primary" style="width:100%;margin:5px 0" onclick="backupJSON()">⬇ Reservekopie maken (JSON)</button>
+ <button class="secondary" style="width:100%;margin:5px 0" onclick="exportCSV()">⬇ Exporteer historie en klassement (Excel/CSV)</button>
+ <button class="secondary" style="width:100%;margin:5px 0" onclick="chooseRestore()">⬆ Reservekopie terugzetten</button></div>
+ <button class="secondary" style="width:100%;margin:6px 0" onclick="rename()">Spelersnamen aanpassen</button>
+ <button class="secondary" style="width:100%;margin:6px 0" onclick="undo()">Laatste actie herstellen</button>
+ <button class="danger" style="width:100%;margin:6px 0" onclick="clearHist()">Historie en klassement wissen</button>
+ <p class="note">Alles blijft lokaal op dit apparaat. Bewaar regelmatig een reservekopie in de Bestanden-app of op een andere veilige plek.</p>`;
+}
+function pick(id){
+ const c=cats.find(x=>x[0]===id),opts=optionsFor(c);
+ modal(`<h2>${c[1]}</h2><p>Kies de score voor ${esc(S.players[S.active].name)}.</p><div class="grid">${opts.map(v=>`<button class="choice" onclick="score('${id}',${v})">${v}</button>`).join('')}</div><div class="actions"><button class="secondary" onclick="close()">Annuleren</button></div>`);
+}
+function score(id,v){
+ if(!S.started||S.gameSaved)return;
+ snap();const who=S.active;S.players[who].scores[id]=v;last={i:who,id};save();close();render();say(`${S.players[who].name}: ${v} punten`);
+ clearTimeout(advanceTimer);
+ advanceTimer=setTimeout(()=>{
+  if(last&&last.i===who&&last.id===id){last=null;if(allDone()){finishGame();}else{S.active=next();save();render();}}
+ },1500);
+}
+function finishGame(){
+ if(S.gameSaved)return;
+ const date=new Date().toISOString(),gameId=String(S.game||1).padStart(3,'0');
+ const totals=S.players.map(p=>total(p)),max=Math.max(...totals),topCount=totals.filter(x=>x===max).length;
+ S.players.forEach((p,i)=>{
+  const outcome=totals[i]===max?(topCount>1?'Gelijk':'Gewonnen'):'Verloren';
+  S.history.push({gameId,date,player:p.name,total:totals[i],outcome,upperBonus:upperBonus(p),yahtzeeBonus:(Number(p.yb)||0)*100});
+ });
+ S.gameSaved=true;save();tab='spel';render();say(topCount>1?'Partij automatisch opgeslagen: gelijkspel':'Partij automatisch opgeslagen');
+}
+function undo(){
+ clearTimeout(advanceTimer);
+ if(!undoStack.length){say('Geen actie om te herstellen');return;}
+ S=JSON.parse(undoStack.pop());last=null;save();render();say('Laatste actie hersteld');
+}
+function editScores(){
+ const p=S.players[S.active],a=cats.filter(c=>p.scores[c[0]]!==undefined);
+ if(!a.length)return say('Nog geen scores');
+ modal(`<h2>Score wijzigen</h2>${a.map(c=>`<button class="cat" onclick="editOne('${c[0]}')"><strong>${c[1]}</strong><span class="score">${p.scores[c[0]]}</span></button>`).join('')}<div class="actions"><button class="secondary" onclick="close()">Sluiten</button></div>`);
+}
+function editOne(id){
+ const c=cats.find(x=>x[0]===id),opts=optionsFor(c);
+ modal(`<h2>${c[1]} wijzigen</h2><div class="grid">${opts.map(v=>`<button class="choice" onclick="setEdit('${id}',${v})">${v}</button>`).join('')}</div><button class="danger" style="width:100%;margin-top:10px" onclick="erase('${id}')">Categorie leegmaken</button>`);
+}
+function setEdit(id,v){snap();S.players[S.active].scores[id]=v;S.gameSaved=false;save();close();render();say('Score gewijzigd. Controleer de partij en rond deze opnieuw af als iedereen klaar is.');}
+function erase(id){snap();delete S.players[S.active].scores[id];S.gameSaved=false;save();close();render();say('Categorie leeggemaakt. De partij is weer open.');}
+function extra(){
+ const p=S.players[S.active];
+ if(p.scores.yahtzee!==50)return say('Voor een extra Yahtzee-bonus moet Yahtzee eerst met 50 punten zijn ingevuld.');
+ const upperOpen=upperIds.some(id=>p.scores[id]===undefined);
+ modal(`<h2>🎲 Extra Yahtzee</h2><p>Bevestig de extra Yahtzee en kies welk getal op alle vijf dobbelstenen ligt. De app telt 100 bonuspunten bij en past daarna de Jokerregel toe.</p><div class="grid">${[1,2,3,4,5,6].map(n=>`<button class="choice" onclick="extraFace(${n})">${n}</button>`).join('')}</div><div class="actions"><button class="secondary" onclick="close()">Annuleren</button></div><p class="note">Alleen bevestigen als je daadwerkelijk opnieuw Yahtzee hebt gegooid.</p>`);
+}
+function extraFace(face){
+ const p=S.players[S.active],upperId=upperIds[face-1],upperName=cats.find(c=>c[0]===upperId)[1];
+ if(p.scores[upperId]===undefined){
+  modal(`<h2>Jokerregel: ${upperName}</h2><p>De bijbehorende bovenste categorie is nog open. Die moet volgens de Jokerregel worden ingevuld met ${5*face} punten.</p><div class="actions"><button class="secondary" onclick="close()">Annuleren</button><button class="primary" onclick="applyJoker('${upperId}',${5*face},${face})">+100 en ${5*face} punten</button></div>`);
+  return;
+ }
+ const available=lowerIds.filter(id=>p.scores[id]===undefined);
+ if(available.length){
+  modal(`<h2>Jokerregel: kies categorie</h2><p>De bijbehorende bovenste categorie (${upperName}) is al ingevuld. Kies een nog open categorie in het onderste gedeelte. De score wordt volgens de Jokerregel bepaald.</p>${available.map(id=>{const c=cats.find(x=>x[0]===id),v=c[2]==='fixed'?c[3]:5*face;return `<button class="cat" onclick="applyJoker('${id}',${v},${face})"><strong>${c[1]}</strong><span class="score">${v}</span></button>`}).join('')}<div class="actions"><button class="secondary" onclick="close()">Annuleren</button></div>`);
+  return;
+ }
+ const upperAvailable=upperIds.filter(id=>p.scores[id]===undefined);
+ if(upperAvailable.length){
+  modal(`<h2>Jokerregel: bovenste gedeelte</h2><p>Er zijn geen open categorieën in het onderste gedeelte. Kies een open categorie in het bovenste gedeelte; de score is 0.</p>${upperAvailable.map(id=>`<button class="cat" onclick="applyJoker('${id}',0,${face})"><strong>${cats.find(c=>c[0]===id)[1]}</strong><span class="score">0</span></button>`).join('')}<div class="actions"><button class="secondary" onclick="close()">Annuleren</button></div>`);
+  return;
+ }
+ say('Er is geen open categorie meer om de Jokerregel toe te passen.');
+}
+function applyJoker(id,value,face){
+ snap();const who=S.active,p=S.players[who];p.yb=(Number(p.yb)||0)+1;p.scores[id]=value;last={i:who,id};save();close();render();
+ say(`Extra Yahtzee: +100 bonus en ${value} punten bij ${cats.find(c=>c[0]===id)[1]}`);
+ clearTimeout(advanceTimer);
+ advanceTimer=setTimeout(()=>{if(last&&last.i===who&&last.id===id){last=null;if(allDone())finishGame();else{S.active=next();save();render();}}},1500);
+}
+function newGame(){
+ modal(`<h2>Nieuwe partij</h2><p>Met dezelfde spelers verder spelen?</p><div class="actions"><button class="primary" onclick="startSame()">Ja, dezelfde</button><button class="secondary" onclick="newNames()">Andere spelers</button></div><div class="actions"><button class="secondary" onclick="close()">Annuleren</button></div>`);
+}
+function startSame(){begin(S.players.map(p=>p.name));}
+function newNames(){
+ modal(`<h2>Spelers instellen</h2><div class="field"><label>Aantal spelers</label><select id="num" onchange="namesForm()">${[2,3,4,5,6].map(n=>`<option>${n}</option>`).join('')}</select></div><div id="names"></div><div class="actions"><button class="secondary" onclick="close()">Annuleren</button><button class="primary" onclick="createNames()">Start</button></div>`);namesForm();
+}
+function namesForm(){const el=document.getElementById('num');if(!el)return;const n=Number(el.value);document.getElementById('names').innerHTML=Array.from({length:n},(_,i)=>`<div class="field"><label>Speler ${i+1}</label><input class="nm" value="${esc(['Gerrie','Sabrina','Speler 3','Speler 4','Speler 5','Speler 6'][i])}"></div>`).join('');}
+function createNames(){begin(Array.from(document.querySelectorAll('.nm')).map(x=>x.value.trim()||'Speler'));}
+function begin(names){
+ if(S.started&&!S.gameSaved&&!allDone()){
+  modal(`<h2>Partij nog niet afgerond</h2><p>De huidige partij is nog niet compleet. Wil je deze partij verlaten? De niet-afgeronde partij wordt niet in de historie opgenomen.</p><div class="actions"><button class="secondary" onclick="close()">Annuleren</button><button class="danger" onclick="beginConfirmed(${JSON.stringify(names).replace(/"/g,'&quot;')})">Nieuwe partij starten</button></div>`);return;
+ }
+ beginConfirmed(names);
+}
+function beginConfirmed(names){
+ snap();S.players=names.map(mk);S.active=0;S.started=true;S.game++;S.gameSaved=false;last=null;save();close();tab='spel';render();say('Nieuwe partij gestart');
+}
+function rename(){
+ modal(`<h2>Spelers aanpassen</h2>${S.players.map((p,i)=>`<div class="field"><label>Speler ${i+1}</label><input id="rn${i}" value="${esc(p.name)}"></div>`).join('')}<div class="actions"><button class="secondary" onclick="close()">Annuleren</button><button class="primary" onclick="renameOK()">Opslaan</button></div>`);
+}
+function renameOK(){snap();S.players.forEach((p,i)=>p.name=document.getElementById('rn'+i).value.trim()||p.name);save();close();render();say('Spelersnamen aangepast');}
+function clearHist(){
+ modal(`<h2>Historie wissen?</h2><p>Dit verwijdert de opgeslagen historie en het klassement. De lopende partij blijft staan. Maak zo nodig eerst een reservekopie.</p><div class="actions"><button class="secondary" onclick="close()">Annuleren</button><button class="danger" onclick="S.history=[];save();close();render();say('Historie gewist')">Wissen</button></div>`);
+}
+function downloadFile(name,content,type){
+ const blob=new Blob([content],{type}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);
+}
+function backupJSON(){
+ const payload={app:'Gerrie & Sabrina Yahtzee',version:2,exportedAt:new Date().toISOString(),state:S};
+ downloadFile('Gerrie_Sabrina_Yahtzee_reservekopie.json',JSON.stringify(payload,null,2),'application/json');
+ say('Reservekopiebestand aangemaakt');
+}
+function csvCell(v){let s=String(v??'');return '"'+s.replace(/"/g,'""')+'"';}
+function exportCSV(){
+ const header=['Partij-ID','Datum/tijd','Speler','Eindtotaal','Uitkomst','Bovenbonus','Yahtzee-bonus'];
+ const lines=[header.map(csvCell).join(';'),...S.history.map(h=>[h.gameId,new Date(h.date).toLocaleString('nl-NL'),h.player,h.total,h.outcome,h.upperBonus??'',h.yahtzeeBonus??''].map(csvCell).join(';'))];
+ const rank=rankRows(),rh=['Speler','Gespeeld','Gewonnen','Verloren','Gelijk','Totaal punten','Gemiddelde','Hoogste score'];
+ const rlines=[rh.map(csvCell).join(';'),...rank.map(r=>[r.player,r.played,r.won,r.lost,r.tie,r.points,r.average.toFixed(1).replace('.',','),r.highest].map(csvCell).join(';'))];
+ const bom='\ufeff';
+ downloadFile('Yahtzee_Historie.csv',bom+lines.join('\r\n'),'text/csv;charset=utf-8');
+ setTimeout(()=>downloadFile('Yahtzee_Klassement.csv',bom+rlines.join('\r\n'),'text/csv;charset=utf-8'),400);
+ say('Excel-bestanden worden klaargezet');
+}
+function chooseRestore(){
+ modal(`<h2>Reservekopie terugzetten</h2><p>Kies het JSON-reservekopiebestand dat je eerder hebt opgeslagen. De huidige spelgegevens worden vervangen door de gegevens uit dat bestand.</p><div class="field"><input type="file" id="restoreFile" accept=".json,application/json"></div><div class="actions"><button class="secondary" onclick="close()">Annuleren</button><button class="primary" onclick="restoreJSON()">Terugzetten</button></div>`);
+}
+function restoreJSON(){
+ const f=document.getElementById('restoreFile').files[0];if(!f)return say('Selecteer eerst een reservekopiebestand');
+ const reader=new FileReader();reader.onload=()=>{try{const parsed=JSON.parse(reader.result),state=parsed.state||parsed;S=migrate(state);undoStack=[];last=null;save();close();tab='spel';render();say('Reservekopie teruggezet');}catch(e){say('Dit bestand is geen geldige Yahtzee-reservekopie');}};reader.readAsText(f);
+}
+document.querySelectorAll('.nav').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;render();});
+ov.onclick=e=>{if(e.target===ov)close();};
+if('serviceWorker'in navigator&&location.protocol.startsWith('http'))addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+save();render();
+</script>
+</body>
+</html>
