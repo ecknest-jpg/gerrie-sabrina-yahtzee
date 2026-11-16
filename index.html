@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-title" content="G&S Yahtzee">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
-<title>Gerrie & Sabrina Yahtzee</title>
+<title>Gerrie & Sabrina Yahtzee · v1.1.0</title>
 <style>
 :root{--teal:#087f78;--navy:#173b60;--bg:#f2f5f7;--line:#dce3e8;--gold:#fff0b8;--muted:#64748b}
 *{box-sizing:border-box}
@@ -59,7 +59,7 @@ tr:nth-child(even) td{background:#f7f9fa}
 </style>
 </head>
 <body>
-<header><div class="brand">🎲 Gerrie & Sabrina Yahtzee</div><div class="sub">Klassieke Yahtzee · lokaal opgeslagen</div></header>
+<header><div class="brand">🎲 Gerrie & Sabrina Yahtzee</div><div class="sub">Klassieke Yahtzee · lokaal opgeslagen · v1.1.0</div><div id="updateNotice" style="display:none;margin-top:9px;background:#fff0b8;color:#173b60;padding:9px 11px;border-radius:10px;font-size:13px;font-weight:750"><span id="updateText">Nieuwe versie beschikbaar.</span> <button id="updateButton" onclick="applyAppUpdate()" style="margin-left:7px;border:0;border-radius:8px;padding:7px 10px;background:#173b60;color:white;font-weight:800">Bijwerken</button></div></header>
 <main id="app"></main>
 <nav class="bottom">
 <button class="nav on" data-tab="spel"><b>🎲</b>Spel</button>
@@ -292,7 +292,36 @@ function restoreJSON(){
 }
 document.querySelectorAll('.nav').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;render();});
 ov.onclick=e=>{if(e.target===ov)close();};
-if('serviceWorker'in navigator&&location.protocol.startsWith('http'))addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+let updatePending=false;
+function updateSafe(){return !(S.started&&!S.gameSaved&&!allDone());}
+function showUpdateNotice(){
+ const box=document.getElementById('updateNotice'),txt=document.getElementById('updateText'),btn=document.getElementById('updateButton');
+ if(!box)return;
+ box.style.display=updatePending?'block':'none';
+ if(!updatePending)return;
+ const safe=updateSafe();
+ txt.textContent=safe?'Nieuwe versie klaar om te laden.':'Nieuwe versie klaar. Rond eerst de huidige partij af.';
+ btn.style.display=safe?'inline-block':'none';
+}
+function applyAppUpdate(){if(!updatePending)return;if(!updateSafe()){say('Rond eerst de huidige partij af.');return;}location.reload();}
+if('serviceWorker'in navigator&&location.protocol.startsWith('http')){
+ addEventListener('load',async()=>{
+  const hadController=!!navigator.serviceWorker.controller;
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{
+   if(hadController){updatePending=true;showUpdateNotice();}
+  });
+  try{
+   const registration=await navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'});
+   await registration.update();
+   registration.addEventListener('updatefound',()=>{
+    const installing=registration.installing;
+    if(installing)installing.addEventListener('statechange',()=>{
+     if(installing.state==='installed'&&navigator.serviceWorker.controller){updatePending=true;showUpdateNotice();}
+    });
+   });
+  }catch(error){console.warn('Updatecontrole niet beschikbaar:',error);}
+ });
+}
 save();render();
 </script>
 </body>
