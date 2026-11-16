@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-title" content="G&S Yahtzee">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
-<title>Gerrie & Sabrina Yahtzee · v1.2.0</title>
+<title>Gerrie & Sabrina Yahtzee · v1.3.0</title>
 <style>
 :root{--teal:#087f78;--navy:#173b60;--bg:#f2f5f7;--line:#dce3e8;--gold:#fff0b8;--muted:#64748b}
 *{box-sizing:border-box}
@@ -31,7 +31,7 @@ h2{font-size:21px;color:var(--navy);margin:8px 0 12px}
 .cat:disabled{opacity:1}.cat strong{font-size:16px}.score{font-size:19px;font-weight:850;color:var(--navy)}.empty{color:#9aa6b2}
 .tot{display:flex;justify-content:space-between;padding:11px 14px;background:#edf2f5;border-bottom:1px solid var(--line);font-weight:750}
 .final{background:var(--navy);color:white;font-size:18px}
-.tools{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:13px 0}
+.tools{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:13px 0}
 .tool,.primary,.secondary,.danger{border:0;border-radius:12px;padding:13px 8px;font-weight:800;font-size:14px}
 .tool{background:white;color:var(--navy);box-shadow:0 4px 16px #173b6014;font-size:12px}.tool b{display:block;font-size:19px}
 .primary{background:var(--teal);color:white}.secondary{background:#e9eef2;color:var(--navy)}.danger{background:#fff0f0;color:#a52c2c}
@@ -59,7 +59,7 @@ tr:nth-child(even) td{background:#f7f9fa}
 </style>
 </head>
 <body>
-<header><div class="brand">🎲 Gerrie & Sabrina Yahtzee</div><div class="sub">Klassieke Yahtzee · lokaal opgeslagen · v1.2.0</div><div id="updateNotice" style="display:none;margin-top:9px;background:#fff0b8;color:#173b60;padding:9px 11px;border-radius:10px;font-size:13px;font-weight:750"><span id="updateText">Nieuwe versie beschikbaar.</span> <button id="updateButton" onclick="applyAppUpdate()" style="margin-left:7px;border:0;border-radius:8px;padding:7px 10px;background:#173b60;color:white;font-weight:800">Bijwerken</button></div></header>
+<header><div class="brand">🎲 Gerrie & Sabrina Yahtzee</div><div class="sub">Klassieke Yahtzee · lokaal opgeslagen · v1.3.0</div><div id="updateNotice" style="display:none;margin-top:9px;background:#fff0b8;color:#173b60;padding:9px 11px;border-radius:10px;font-size:13px;font-weight:750"><span id="updateText">Nieuwe versie beschikbaar.</span> <button id="updateButton" onclick="applyAppUpdate()" style="margin-left:7px;border:0;border-radius:8px;padding:7px 10px;background:#173b60;color:white;font-weight:800">Bijwerken</button></div></header>
 <main id="app"></main>
 <nav class="bottom">
 <button class="nav on" data-tab="spel"><b>🎲</b>Spel</button>
@@ -109,6 +109,7 @@ function migrate(raw){
 }
 function read(){try{return migrate(JSON.parse(localStorage.getItem(KEY)))}catch(e){return defaultState()}}
 let S=read(),tab='spel',undoStack=[],last=null,advanceTimer=null;
+let keepScreenOn=false,screenWakeLock=null;
 const app=document.getElementById('app'),ov=document.getElementById('ov'),dlg=document.getElementById('dlg'),toast=document.getElementById('toast');
 function save(){
  const data=JSON.stringify(S);
@@ -170,7 +171,41 @@ function allDone(){return S.players.length>0&&S.players.every(done);}
 function next(){for(let k=1;k<=S.players.length;k++){let i=(S.active+k)%S.players.length;if(!done(S.players[i]))return i;}return S.active;}
 function modal(x){dlg.innerHTML=x;ov.classList.add('show');}
 function close(){ov.classList.remove('show');}
-function say(x){toast.textContent=x;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),1800);}
+function say(x){toast.textContent=x;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),2400);}
+async function requestScreenWakeLock(){
+ if(!navigator.wakeLock||!navigator.wakeLock.request){
+  keepScreenOn=false;render();
+  say('Deze browser ondersteunt scherm vasthouden niet. Gebruik iPhone-instellingen > Beeldscherm en helderheid > Automatisch slot.');
+  return false;
+ }
+ try{
+  screenWakeLock=await navigator.wakeLock.request('screen');
+  screenWakeLock.addEventListener('release',()=>{
+   screenWakeLock=null;
+   if(keepScreenOn&&document.visibilityState==='visible')say('Schermvergrendeling is door de telefoon vrijgegeven. Tik opnieuw op Scherm vasthouden.');
+  });
+  return true;
+ }catch(e){
+  screenWakeLock=null;keepScreenOn=false;render();
+  say('Scherm vasthouden kon niet worden ingeschakeld. Probeer opnieuw.');
+  return false;
+ }
+}
+async function toggleKeepScreenOn(){
+ if(keepScreenOn){
+  keepScreenOn=false;
+  if(screenWakeLock){try{await screenWakeLock.release();}catch(e){}screenWakeLock=null;}
+  render();say('Automatisch zwart worden weer toegestaan.');
+  return;
+ }
+ keepScreenOn=true;
+ const ok=await requestScreenWakeLock();
+ if(ok){render();say('Scherm blijft aan zolang Yahtzee open is.');}
+}
+document.addEventListener('visibilitychange',async()=>{
+ if(document.visibilityState==='visible'&&keepScreenOn&&!screenWakeLock)await requestScreenWakeLock();
+});
+
 function optionsFor(c){if(c[2]==='upper')return Array.from({length:6},(_,i)=>i*c[3]);if(c[2]==='fixed')return [0,c[3]];return Array.from({length:26},(_,i)=>i+5);}
 function render(){
  document.querySelectorAll('.nav').forEach(b=>b.classList.toggle('on',b.dataset.tab===tab));
@@ -189,7 +224,7 @@ function gameUI(){
  <div class="heading">Onderste gedeelte</div><div class="sheet">${list.split('</button>').slice(6).join('</button>')}
  <div class="tot"><span>Extra Yahtzee (${p.yb} × 100)</span><span>${p.yb*100}</span></div><div class="tot"><span>Totaal onder</span><span>${low(p)}</span></div><div class="tot final"><span>Eindtotaal</span><span>${total(p)}</span></div></div>
  ${S.gameSaved?`<div class="panel" style="margin-top:13px"><h2>🏆 Partij afgerond</h2>${winnerText(S.players)}<button class="primary" style="width:100%;margin-top:10px" onclick="newGame()">＋ Nieuwe partij</button></div>`:
- `<div class="tools"><button class="tool" onclick="undo()"><b>↶</b>Herstel</button><button class="tool" onclick="editScores()"><b>✎</b>Wijzig score</button><button class="tool" onclick="extra()"> <b>🎲</b>Extra Yahtzee</button></div>`}`;
+ `<div class="tools"><button class="tool" onclick="undo()"><b>↶</b>Herstel</button><button class="tool" onclick="editScores()"><b>✎</b>Wijzig score</button><button class="tool" onclick="extra()"> <b>🎲</b>Extra Yahtzee</button><button class="tool" onclick="toggleKeepScreenOn()"><b>☀️</b>Scherm vasthouden</button></div>`}`;
 }
 function winnerText(players){const max=Math.max(...players.map(total));const winners=players.filter(p=>total(p)===max);return `<p>${winners.length>1?'Gelijkspel tussen':'Winnaar:'} <b>${winners.map(p=>esc(p.name)).join(' & ')}</b> met ${max} punten.</p>${players.map(p=>`<div class="row"><span>${esc(p.name)}</span><b>${total(p)} punten</b></div>`).join('')}`;}
 function rankRows(){
