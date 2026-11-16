@@ -125,6 +125,7 @@ function optionsFor(c){if(c[2]==='upper')return Array.from({length:6},(_,i)=>i*c
 function render(){
  document.querySelectorAll('.nav').forEach(b=>b.classList.toggle('on',b.dataset.tab===tab));
  app.innerHTML=tab==='spel'?gameUI():tab==='klassement'?standUI():tab==='historie'?historyUI():actionsUI();
+ showUpdateNotice();
 }
 function gameUI(){
  if(!S.started)return `<div class="panel"><h2>Welkom bij Yahtzee!</h2><p>Start een nieuwe partij om te beginnen.</p><button class="primary" style="width:100%" onclick="newGame()">＋ Nieuwe partij</button></div>`;
@@ -310,15 +311,19 @@ if('serviceWorker'in navigator&&location.protocol.startsWith('http')){
   navigator.serviceWorker.addEventListener('controllerchange',()=>{
    if(hadController){updatePending=true;showUpdateNotice();}
   });
+  const watchInstalling=worker=>{
+   if(!worker)return;
+   worker.addEventListener('statechange',()=>{
+    if(worker.state==='installed'&&navigator.serviceWorker.controller){
+     updatePending=true;showUpdateNotice();
+    }
+   });
+  };
   try{
    const registration=await navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'});
+   registration.addEventListener('updatefound',()=>watchInstalling(registration.installing));
+   if(registration.installing)watchInstalling(registration.installing);
    await registration.update();
-   registration.addEventListener('updatefound',()=>{
-    const installing=registration.installing;
-    if(installing)installing.addEventListener('statechange',()=>{
-     if(installing.state==='installed'&&navigator.serviceWorker.controller){updatePending=true;showUpdateNotice();}
-    });
-   });
   }catch(error){console.warn('Updatecontrole niet beschikbaar:',error);}
  });
 }
