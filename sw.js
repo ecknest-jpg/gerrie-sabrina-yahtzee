@@ -1,4 +1,4 @@
-const CACHE_NAME = 'gs-yatzee-v1.5.1';
+const CACHE_NAME = 'gs-yatzee-v1.5.2';
 const APP_PREFIX = 'gs-yatzee-';
 const APP_FILES = [
   './',
