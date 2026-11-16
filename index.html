@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-title" content="G&S Yahtzee">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
-<title>Gerrie & Sabrina Yahtzee · v1.5.0</title>
+<title>Gerrie & Sabrina Yahtzee · v1.5.1</title>
 <style>
 :root{--teal:#087f78;--navy:#173b60;--bg:#f2f5f7;--line:#dce3e8;--gold:#fff0b8;--muted:#64748b}
 *{box-sizing:border-box}
@@ -28,7 +28,7 @@ h2{font-size:21px;color:var(--navy);margin:8px 0 12px}
 .sheet{overflow:hidden}
 .cat{width:100%;display:flex;justify-content:space-between;align-items:center;text-align:left;background:white;padding:13px 14px;border:0;border-bottom:1px solid var(--line);min-height:53px}
 .cat:nth-child(even){background:#f7f9fa}.cat.last{background:var(--gold)!important;box-shadow:inset 5px 0 var(--teal)}
-.cat:disabled{opacity:1}.cat strong{font-size:16px;display:flex;align-items:center;gap:9px}.die-face{display:inline-block;min-width:40px;font-size:30px;line-height:1.05;vertical-align:middle}.cat-icon{display:inline-block;flex:0 0 auto;font-size:21px;letter-spacing:-7px;padding-right:6px;white-space:nowrap;filter:drop-shadow(0 1px 1px #17212b35)}.cat-label{display:inline-block}.score{font-size:19px;font-weight:850;color:var(--navy)}.empty{color:#9aa6b2}
+.cat:disabled{opacity:1}.cat strong{font-size:16px;display:flex;align-items:center;gap:9px}.die-face{display:inline-block;min-width:44px;font-size:38px;font-weight:900;line-height:1.05;vertical-align:middle;text-shadow:-.45px 0 currentColor,.45px 0 currentColor,0 -.45px currentColor,0 .45px currentColor}.cat-icon{display:inline-block;flex:0 0 auto;font-family:Arial,sans-serif;font-size:34px;font-weight:900;letter-spacing:-5px;line-height:1.05;padding-right:6px;white-space:nowrap;color:var(--navy);text-shadow:-.45px 0 currentColor,.45px 0 currentColor,0 -.45px currentColor,0 .45px currentColor}.cat-label{display:inline-block}.score{font-size:19px;font-weight:850;color:var(--navy)}.empty{color:#9aa6b2}
 .tot{display:flex;justify-content:space-between;padding:11px 14px;background:#edf2f5;border-bottom:1px solid var(--line);font-weight:750}
 .final{background:var(--navy);color:white;font-size:18px}
 .tools{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:13px 0}
@@ -59,7 +59,7 @@ tr:nth-child(even) td{background:#f7f9fa}
 </style>
 </head>
 <body>
-<header><div class="brand">🎲 Gerrie & Sabrina Yahtzee</div><div class="sub">Klassieke Yahtzee · lokaal opgeslagen · v1.5.0</div><div id="updateNotice" style="display:none;margin-top:9px;background:#fff0b8;color:#173b60;padding:9px 11px;border-radius:10px;font-size:13px;font-weight:750"><span id="updateText">Nieuwe versie beschikbaar.</span> <button id="updateButton" onclick="applyAppUpdate()" style="margin-left:7px;border:0;border-radius:8px;padding:7px 10px;background:#173b60;color:white;font-weight:800">Bijwerken</button></div></header>
+<header><div class="brand">🎲 Gerrie & Sabrina Yahtzee</div><div class="sub">Klassieke Yahtzee · lokaal opgeslagen · v1.5.1</div><div id="updateNotice" style="display:none;margin-top:9px;background:#fff0b8;color:#173b60;padding:9px 11px;border-radius:10px;font-size:13px;font-weight:750"><span id="updateText">Nieuwe versie beschikbaar.</span> <button id="updateButton" onclick="applyAppUpdate()" style="margin-left:7px;border:0;border-radius:8px;padding:7px 10px;background:#173b60;color:white;font-weight:800">Bijwerken</button></div></header>
 <main id="app"></main>
 <nav class="bottom">
 <button class="nav on" data-tab="spel"><b>🎲</b>Spel</button>
@@ -216,7 +216,7 @@ function gameUI(){
  if(!S.started)return `<div class="panel"><h2>Welkom bij Yahtzee!</h2><p>Start een nieuwe partij om te beginnen.</p><button class="primary" style="width:100%" onclick="newGame()">＋ Nieuwe partij</button></div>`;
  const p=S.players[S.active];
  const ps=S.players.map((x,i)=>`<div class="player ${i===S.active&&!S.gameSaved?'active':''}"><div class="pname">${esc(x.name)}</div><div class="total">${total(x)}</div><div class="hint">${done(x)?'Klaar':i===S.active?'Aan de beurt':'Wacht op beurt'}</div></div>`).join('');
- const diceIcons={three:'🎲🎲🎲',four:'🎲🎲🎲🎲',full:'🎲🎲🎲 🎲🎲',small:'🎲🎲🎲🎲',large:'🎲🎲🎲🎲🎲',yahtzee:'🎲🎲🎲🎲🎲',chance:'🎲🎲🎲🎲🎲'};
+ const diceIcons={three:'⚂⚂⚂',four:'⚂⚂⚂⚂',full:'⚂⚂⚂⚄⚄',small:'⚀⚁⚂⚃',large:'⚀⚁⚂⚃⚄',yahtzee:'⚅⚅⚅⚅⚅',chance:'⚀⚁⚂⚃⚄⚅'};
  const list=cats.map((c,i)=>`<button class="cat ${last&&last.i===S.active&&last.id===c[0]?'last':''}" ${!S.gameSaved&&p.scores[c[0]]===undefined?`onclick="pick('${c[0]}')"`:'disabled'}><strong>${i<6?`<span class="die-face" role="img" aria-label="${c[1]}">${['⚀','⚁','⚂','⚃','⚄','⚅'][i]}</span>`:`<span class="cat-icon" aria-hidden="true">${diceIcons[c[0]]||'🎲'}</span><span class="cat-label">${c[1]}</span>`}${i<6?`<small style="display:block;font-size:11px;color:#64748b;font-weight:500">Tel alle ${i+1}-en bij elkaar op</small>`:''}</strong><span class="score ${p.scores[c[0]]===undefined?'empty':''}">${p.scores[c[0]]===undefined?'＋':p.scores[c[0]]}</span></button>`).join('');
  const status=S.gameSaved?`<strong>Partij opgeslagen</strong><span><span class="badge">Automatisch</span></span>`:`<strong>${done(p)?'Speler klaar':'Beurt: '+esc(p.name)}</strong><span>Ingevuld ${Object.keys(p.scores).length}/13</span>`;
  return `<div class="players">${ps}</div><div class="status">${status}</div>
