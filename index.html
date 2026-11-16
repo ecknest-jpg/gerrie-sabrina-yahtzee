@@ -294,7 +294,7 @@ function restoreJSON(){
 document.querySelectorAll('.nav').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;render();});
 ov.onclick=e=>{if(e.target===ov)close();};
 let updatePending=false;
-function updateSafe(){return !(S.started&&!S.gameSaved&&!allDone());}
+function updateSafe(){return !S.started||S.gameSaved;}
 function showUpdateNotice(){
  const box=document.getElementById('updateNotice'),txt=document.getElementById('updateText'),btn=document.getElementById('updateButton');
  if(!box)return;
