@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-title" content="G&S Yahtzee">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
-<title>Gerrie & Sabrina Yahtzee · v1.5.2</title>
+<title>Gerrie & Sabrina Yahtzee · v1.5.3</title>
 <style>
 :root{--teal:#087f78;--navy:#173b60;--bg:#f2f5f7;--line:#dce3e8;--gold:#fff0b8;--muted:#64748b}
 *{box-sizing:border-box}
@@ -59,7 +59,7 @@ tr:nth-child(even) td{background:#f7f9fa}
 </style>
 </head>
 <body>
-<header><div class="brand">🎲 Gerrie & Sabrina Yahtzee</div><div class="sub">Klassieke Yahtzee · lokaal opgeslagen · v1.5.2</div><div id="updateNotice" style="display:none;margin-top:9px;background:#fff0b8;color:#173b60;padding:9px 11px;border-radius:10px;font-size:13px;font-weight:750"><span id="updateText">Nieuwe versie beschikbaar.</span> <button id="updateButton" onclick="applyAppUpdate()" style="margin-left:7px;border:0;border-radius:8px;padding:7px 10px;background:#173b60;color:white;font-weight:800">Bijwerken</button></div></header>
+<header><div class="brand">🎲 Gerrie & Sabrina Yahtzee</div><div class="sub">Klassieke Yahtzee · lokaal opgeslagen · v1.5.3</div><div id="updateNotice" style="display:none;margin-top:9px;background:#fff0b8;color:#173b60;padding:9px 11px;border-radius:10px;font-size:13px;font-weight:750"><span id="updateText">Nieuwe versie beschikbaar.</span> <button id="updateButton" onclick="applyAppUpdate()" style="margin-left:7px;border:0;border-radius:8px;padding:7px 10px;background:#173b60;color:white;font-weight:800">Bijwerken</button></div></header>
 <main id="app"></main>
 <nav class="bottom">
 <button class="nav on" data-tab="spel"><b>🎲</b>Spel</button>
@@ -346,7 +346,14 @@ function begin(names){
  beginConfirmed(names);
 }
 function beginConfirmed(names){
- snap();S.players=names.map(mk);S.active=0;S.started=true;S.game++;S.gameSaved=false;last=null;save();close();tab='spel';render();say('Nieuwe partij gestart');
+ snap();S.players=names.map(mk);S.active=0;S.started=true;S.game++;S.gameSaved=false;last=null;save();close();tab='spel';
+ if(updatePending){
+  // De nieuwe partij is eerst veilig lokaal opgeslagen. Dit is het afgesproken update-moment.
+  // Na herladen wordt dezelfde nieuwe partij vanuit localStorage teruggezet.
+  location.reload();
+  return;
+ }
+ render();say('Nieuwe partij gestart');
 }
 function rename(){
  modal(`<h2>Spelers aanpassen</h2>${S.players.map((p,i)=>`<div class="field"><label>Speler ${i+1}</label><input id="rn${i}" value="${esc(p.name)}"></div>`).join('')}<div class="actions"><button class="secondary" onclick="close()">Annuleren</button><button class="primary" onclick="renameOK()">Opslaan</button></div>`);
