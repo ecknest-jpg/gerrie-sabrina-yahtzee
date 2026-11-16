@@ -72,6 +72,8 @@ tr:nth-child(even) td{background:#f7f9fa}
 <script>
 'use strict';
 const KEY='gs-yatzee-local-v1';
+const AUTO_LATEST_KEY='gs-yatzee-auto-backup-latest-v1';
+const AUTO_PREVIOUS_KEY='gs-yatzee-auto-backup-previous-v1';
 const cats=[
  ['ones','Enen','upper',1],['twos','Tweeën','upper',2],['threes','Drieën','upper',3],
  ['fours','Vieren','upper',4],['fives','Vijven','upper',5],['sixes','Zessen','upper',6],
@@ -108,7 +110,55 @@ function migrate(raw){
 function read(){try{return migrate(JSON.parse(localStorage.getItem(KEY)))}catch(e){return defaultState()}}
 let S=read(),tab='spel',undoStack=[],last=null,advanceTimer=null;
 const app=document.getElementById('app'),ov=document.getElementById('ov'),dlg=document.getElementById('dlg'),toast=document.getElementById('toast');
-function save(){localStorage.setItem(KEY,JSON.stringify(S));}
+function save(){
+ const data=JSON.stringify(S);
+ try{
+  const latestRaw=localStorage.getItem(AUTO_LATEST_KEY);
+  let latest=null;
+  try{latest=latestRaw?JSON.parse(latestRaw):null;}catch(e){}
+  if(!latest||latest.data!==data){
+   if(latestRaw&&latest&&typeof latest.data==='string'){
+    localStorage.setItem(AUTO_PREVIOUS_KEY,latestRaw);
+   }else{
+    const old=localStorage.getItem(KEY);
+    if(old&&old!==data){
+     try{JSON.parse(old);localStorage.setItem(AUTO_PREVIOUS_KEY,JSON.stringify({savedAt:new Date().toISOString(),data:old}));}catch(e){}
+    }
+   }
+   localStorage.setItem(AUTO_LATEST_KEY,JSON.stringify({savedAt:new Date().toISOString(),data}));
+  }
+  localStorage.setItem(KEY,data);
+ }catch(e){
+  try{localStorage.setItem(KEY,data);}catch(writeError){
+   console.error('Opslaan mislukt:',writeError);
+   say('Opslaan mislukt. Maak direct een handmatige reservekopie.');
+  }
+ }
+}
+function readAutoBackup(which){
+ const key=which==='latest'?AUTO_LATEST_KEY:AUTO_PREVIOUS_KEY;
+ try{
+  const item=JSON.parse(localStorage.getItem(key)||'null');
+  if(!item||typeof item.data!=='string')return null;
+  return item;
+ }catch(e){return null;}
+}
+function chooseAutoRestore(){
+ const latest=readAutoBackup('latest'),previous=readAutoBackup('previous');
+ const line=(item,which,label)=>item
+  ?`<button class="secondary" style="width:100%;margin:5px 0;text-align:left" onclick="restoreAutoBackup('${which}')">${label} — ${new Date(item.savedAt).toLocaleString('nl-NL')}</button>`
+  :`<p class="note">${label}: nog niet beschikbaar</p>`;
+ modal(`<h2>Automatische reservekopieën</h2><p>Kies welke lokale reservekopie je wilt terugzetten. Je huidige gegevens worden eerst als herstelpunt bewaard.</p>${line(latest,'latest','Nieuwste reservekopie')}${line(previous,'previous','Vorige reservekopie')}<div class="actions"><button class="secondary" onclick="close()">Annuleren</button></div>`);
+}
+function restoreAutoBackup(which){
+ const item=readAutoBackup(which);
+ if(!item)return say('Deze reservekopie is niet beschikbaar');
+ try{
+  const restored=migrate(JSON.parse(item.data));
+  clearTimeout(advanceTimer);S=restored;undoStack=[];last=null;
+  save();close();tab='spel';render();say('Automatische reservekopie teruggezet');
+ }catch(e){say('De automatische reservekopie kan niet worden gelezen');}
+}
 function snap(){undoStack.push(JSON.stringify(S));if(undoStack.length>50)undoStack.shift();}
 function esc(x){return String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function up(p){return cats.slice(0,6).reduce((n,c)=>n+(Number(p.scores[c[0]])||0),0);}
@@ -164,9 +214,11 @@ function actionsUI(){
  return `<h2>Spelbeheer</h2>
  <button class="primary" style="width:100%;margin:6px 0" onclick="newGame()">＋ Nieuwe partij</button>
  <div class="panel"><b>Reservekopie & Excel</b><p class="note">Bewaar je volledige spelgegevens als reservekopie. De CSV-bestanden kun je openen in Excel.</p>
+ <p class="note">Automatische reservekopieën: nieuwste en vorige versie worden lokaal bijgehouden bij wijzigingen.</p>
+ <button class="secondary" style="width:100%;margin:5px 0" onclick="chooseAutoRestore()">↶ Automatische reservekopie herstellen</button>
  <button class="primary" style="width:100%;margin:5px 0" onclick="backupJSON()">⬇ Reservekopie maken (JSON)</button>
  <button class="secondary" style="width:100%;margin:5px 0" onclick="exportCSV()">⬇ Exporteer historie en klassement (Excel/CSV)</button>
- <button class="secondary" style="width:100%;margin:5px 0" onclick="chooseRestore()">⬆ Reservekopie terugzetten</button></div>
+ <button class="secondary" style="width:100%;margin:5px 0" onclick="chooseRestore()">⬆ JSON-reservekopie terugzetten</button></div>
  <button class="secondary" style="width:100%;margin:6px 0" onclick="rename()">Spelersnamen aanpassen</button>
  <button class="secondary" style="width:100%;margin:6px 0" onclick="undo()">Laatste actie herstellen</button>
  <button class="danger" style="width:100%;margin:6px 0" onclick="clearHist()">Historie en klassement wissen</button>
